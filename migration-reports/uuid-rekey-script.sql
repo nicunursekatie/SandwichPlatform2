@@ -1,6 +1,6 @@
 
 -- UUID Rekey Script for Messaging System Migration
--- Generated on: 2025-07-07T23:08:25.762Z
+-- Generated on: 2025-07-07T23:17:14.300Z
 
 -- Step 1: Add UUID columns to shadow tables if they don't exist
 ALTER TABLE conversations_old ADD COLUMN IF NOT EXISTS uuid_id UUID DEFAULT gen_random_uuid();

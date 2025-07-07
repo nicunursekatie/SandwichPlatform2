@@ -79,6 +79,7 @@ export default function MessagingHub() {
       // Always default to general chat
       return apiRequest('GET', '/api/messages?chatType=general');
     },
+    enabled: !!user, // Only fetch when user is authenticated
     staleTime: 0,
     refetchOnWindowFocus: true,
   });

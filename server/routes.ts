@@ -703,7 +703,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CLEAN: Simple messages endpoint - NO LEGACY CODE
   app.get("/api/messages", isAuthenticated, async (req, res) => {
     try {
-      const chatType = req.query.chatType as string;
+      const chatType = (req.query.chatType as string) || 'general';
       console.log(`[DEBUG] Fetching messages for chatType: ${chatType}`);
       
       if (chatType === 'general') {
