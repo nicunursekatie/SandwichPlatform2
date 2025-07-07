@@ -5868,6 +5868,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // app.post("/api/messages", isAuthenticated, async (req, res) => {
   //   // This is the third conflicting endpoint - disabled for quick fix
   // });
+      try {
+        const existingConversations = await db
+          .select()
+          .from(conversations)
+          .where(and(
+            eq(conversations.type, 'channel'),
+            eq(conversations.name, 'team-chat')
+          ));
+        
+        console.log('  - Found existing conversations:', existingConversations.length);
+        generalConversation = existingConversations[0];
+        
+        if (generalConversation) {
+          console.log('  - Using existing conversation:', generalConversation);
+        }
+      } catch (dbError) {
+        console.error('[ERROR] Database query for conversations failed:', dbError);
+        throw dbError;
+      }
+
+      if (!generalConversation) {
+        console.log('[STEP 4] Creating new team-chat conversation...');
+        try {
+          const newConversationData = {
+            type: 'channel',
+            name: 'team-chat'
+          };
+          console.log('  - Conversation data to insert:', newConversationData);
+          
+          const newConversations = await db
+            .insert(conversations)
+            .values(newConversationData)
+            .returning();
+            
+          generalConversation = newConversations[0];
+          console.log('  - Created new conversation:', generalConversation);
+        } catch (dbError) {
+          console.error('[ERROR] Database insert for conversations failed:', dbError);
+          throw dbError;
+        }
+      }
+
+      const userName = sender || `${user.firstName} ${user.lastName}` || user.email || 'Unknown User';
+      console.log('[STEP 5] Preparing message data:');
+      console.log('  - userName:', userName);
+      console.log('  - conversationId:', generalConversation.id);
+      console.log('  - userId:', user.id);
+      console.log('  - content:', content.trim());
+
+      const messageData = {
+        conversationId: generalConversation.id,
+        userId: user.id,
+        content: content.trim(),
+        sender: userName
+      };
+      console.log('  - Complete message data:', messageData);
+
+      console.log('[STEP 6] Inserting message into database...');
+      let message;
+      try {
+        const insertedMessages = await db
+          .insert(messagesTable)
+          .values(messageData)
+          .returning();
+          
+        message = insertedMessages[0];
+        console.log('  - Inserted message successfully:', message);
+      } catch (dbError) {
+        console.error('[ERROR] Database insert for messages failed:', dbError);
+        console.error('  - Error details:', {
+          message: dbError.message,
+          code: dbError.code,
+          detail: dbError.detail,
+          hint: dbError.hint
+        });
+        throw dbError;
+      }
+
+      console.log('[STEP 7] Broadcasting message...');
+      // Broadcast via WebSocket if available
+      if (broadcastNewMessage) {
+        const broadcastData = {
+          type: 'new_message',
+          conversationId: generalConversation.id,
+          message: {
+            id: message.id,
+            content: message.content,
+            userId: message.userId,
+            sender: userName,
+            timestamp: message.createdAt,
+            committee: 'general'
+          }
+        };
+        console.log('  - Broadcasting data:', broadcastData);
+        broadcastNewMessage(broadcastData);
+      } else {
+        console.log('  - No broadcast function available');
+      }
+
+      const responseData = {
+        id: message.id,
+        content: message.content,
+        userId: message.userId,
+        sender: userName,
+        timestamp: message.createdAt,
+        committee: 'general'
+      };
+      console.log('[STEP 8] Sending response:', responseData);
+      console.log('=== POST /api/messages SUCCESS ===');
+      
+      res.json(responseData);
+    } catch (error) {
+      console.error('=== POST /api/messages ERROR ===');
+      console.error('[ERROR] Full error object:', error);
+      console.error('[ERROR] Error name:', error.name);
+      console.error('[ERROR] Error message:', error.message);
+      console.error('[ERROR] Error stack:', error.stack);
+      if (error.code) console.error('[ERROR] Error code:', error.code);
+      if (error.detail) console.error('[ERROR] Error detail:', error.detail);
+      if (error.hint) console.error('[ERROR] Error hint:', error.hint);
+      console.error('=== POST /api/messages ERROR END ===');
+      
+      res.status(500).json({ 
+        message: "Internal server error",
+        error: error.message,
+        details: error.detail || 'No additional details'
+      });
+    }
+  });
 
   app.delete("/api/messages/:id", isAuthenticated, async (req, res) => {
     try {
