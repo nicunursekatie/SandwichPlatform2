@@ -124,11 +124,13 @@ router.post("/conversations", isAuthenticated, requirePermission("SEND_MESSAGES"
 
 // ==================== MESSAGES API ====================
 
-// GET /api/conversations/:id/messages - Get messages for conversation  
+// GET /api/conversations/:id/messages - Get messages for conversation with pagination
 router.get("/conversations/:id/messages", isAuthenticated, async (req: any, res) => {
   try {
     const userId = req.user.id;
     const conversationId = parseInt(req.params.id);
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100); // Max 100 messages
+    const offset = parseInt(req.query.offset as string) || 0;
 
     if (isNaN(conversationId)) {
       return res.status(400).json({ message: "Invalid conversation ID" });
@@ -147,16 +149,34 @@ router.get("/conversations/:id/messages", isAuthenticated, async (req: any, res)
       return res.status(403).json({ message: "Access denied to this conversation" });
     }
 
-    // Get messages using raw SQL query to avoid Drizzle issues
+    // Get messages with pagination using raw SQL for performance
     const conversationMessages = await db.execute(sql`
       SELECT id, conversation_id as "conversationId", user_id as "userId", 
              content, sender, created_at as "createdAt", updated_at as "updatedAt"
       FROM messages 
       WHERE conversation_id = ${conversationId}
       ORDER BY created_at ASC
+      LIMIT ${limit} OFFSET ${offset}
     `);
 
-    res.json(conversationMessages);
+    // Get total count for pagination info
+    const [countResult] = await db.execute(sql`
+      SELECT COUNT(*) as count FROM messages WHERE conversation_id = ${conversationId}
+    `);
+    const totalCount = parseInt(countResult.count);
+
+    // Handle different response formats from raw SQL
+    const messageRows = conversationMessages.rows || conversationMessages;
+    
+    res.json({
+      messages: messageRows,
+      pagination: {
+        limit,
+        offset,
+        total: totalCount,
+        hasMore: offset + limit < totalCount
+      }
+    });
   } catch (error) {
     console.error("Error fetching messages:", error);
     res.status(500).json({ message: "Failed to fetch messages" });
@@ -205,6 +225,15 @@ router.post("/conversations/:id/messages", isAuthenticated, requirePermission("S
     // Broadcast message via WebSocket if available
     if (req.app.locals.wss) {
       req.app.locals.wss.broadcast({
+        type: 'new_message',
+        conversationId,
+        message,
+      });
+    }
+
+    // Also try legacy broadcasting function for compatibility
+    if (typeof (global as any).broadcastNewMessage === 'function') {
+      await (global as any).broadcastNewMessage({
         type: 'new_message',
         conversationId,
         message,

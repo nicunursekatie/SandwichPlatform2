@@ -54,24 +54,28 @@ export default function MessagingHub() {
     enabled: !!user,
   });
 
-  // Fetch messages for selected conversation
-  const { data: messages = [], isLoading: messagesLoading } = useQuery({
-    queryKey: ['/api/messages', selectedConversation],
+  // Fetch messages for selected conversation using new unified API with pagination
+  const { data: messageData, isLoading: messagesLoading } = useQuery({
+    queryKey: ['/api/conversations', selectedConversation, 'messages'],
+    queryFn: selectedConversation 
+      ? () => apiRequest('GET', `/api/conversations/${selectedConversation}/messages?limit=50&offset=0`)
+      : undefined,
     enabled: !!selectedConversation,
   });
 
-  // Send message mutation
+  const messages = messageData?.messages || messageData || [];
+
+  // Send message mutation using new unified API
   const sendMessageMutation = useMutation({
     mutationFn: async (data: { conversationId: number; content: string }) => {
-      return apiRequest('POST', '/api/messages', {
-        conversationId: data.conversationId,
+      return apiRequest('POST', `/api/conversations/${data.conversationId}/messages`, {
         content: data.content,
         sender: user?.firstName || user?.email || 'Anonymous'
       });
     },
     onSuccess: () => {
       setMessageContent("");
-      queryClient.invalidateQueries({ queryKey: ['/api/messages', selectedConversation] });
+      queryClient.invalidateQueries({ queryKey: ['/api/conversations', selectedConversation, 'messages'] });
       queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
     },
     onError: (error) => {
