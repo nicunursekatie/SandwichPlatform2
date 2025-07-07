@@ -44,7 +44,7 @@ export default function MessagingHub() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(1); // Default to General Chat (ID: 1)
   const [messageContent, setMessageContent] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -88,6 +88,7 @@ export default function MessagingHub() {
           } else if (convName?.includes('group')) {
             return apiRequest('GET', '/api/messages?chatType=group');
           }
+          console.log('[DEBUG] No matching chat type, returning empty array for:', convName);
           return [];
         }
       : () => Promise.resolve([]),

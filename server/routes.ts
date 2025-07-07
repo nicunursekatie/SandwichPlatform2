@@ -768,11 +768,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const conversationId = chatTypeMap[chatType as keyof typeof chatTypeMap] || 1;
       
-      // Create message using unified API database calls
-      const [message] = await db.insert(messagesTable).values({
+      // Create message using correct table reference
+      const [message] = await db.insert(messages).values({
         conversationId,
         userId,
-        content,
+        content: content.trim(),
         sender: sender || 'Anonymous'
       }).returning();
 

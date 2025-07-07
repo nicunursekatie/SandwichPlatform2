@@ -13,6 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import Landing from "@/pages/landing";
 import SignupPage from "@/pages/signup";
 import NotFound from "@/pages/not-found";
+import SimpleChat from "@/pages/simple-chat";
 
 function Router() {
   const { isAuthenticated, isLoading, error } = useAuth();
@@ -54,6 +55,7 @@ function Router() {
 
   return (
     <Switch>
+      <Route path="/simple-chat" component={SimpleChat} />
       <Route path="/" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
