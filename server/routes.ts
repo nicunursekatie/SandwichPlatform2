@@ -5569,6 +5569,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add session health middleware
   app.use(sessionHealthMiddleware);
 
+  // ==================== PHASE 3: UNIFIED MESSAGING API ====================
+  // Import and register unified messaging routes
+  const { messagingRoutes } = await import("./routes/messaging");
+  app.use("/api", messagingRoutes);
+
   // API endpoints for safeguards monitoring
   app.get('/api/system/session-health', async (req, res) => {
     try {
@@ -5849,19 +5854,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .returning();
       }
 
-      // Get messages for general conversation
+      // Get messages for general conversation using new schema
       const conversationMessages = await db
         .select({
-          id: messagesTable.id,
-          content: messagesTable.content,
-          userId: messagesTable.userId,
-          sender: messagesTable.sender,
-          createdAt: messagesTable.createdAt,
-          updatedAt: messagesTable.updatedAt
+          id: messages.id,
+          content: messages.content,
+          userId: messages.userId,
+          sender: messages.sender,
+          createdAt: messages.createdAt,
+          updatedAt: messages.updatedAt
         })
-        .from(messagesTable)
-        .where(eq(messagesTable.conversationId, generalConversation.id))
-        .orderBy(asc(messagesTable.createdAt));
+        .from(messages)
+        .where(eq(messages.conversationId, generalConversation.id))
+        .orderBy(messages.createdAt);
 
       // Transform to match expected format
       const formattedMessages = conversationMessages.map(msg => ({
