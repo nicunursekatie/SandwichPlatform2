@@ -101,19 +101,21 @@ export default function MessagingHub() {
   // Safely extract messages array with proper error handling
   const messages = (() => {
     console.log('[DEBUG] messageData received:', messageData);
+    console.log('[DEBUG] messageData type:', typeof messageData);
+    console.log('[DEBUG] messageData isArray:', Array.isArray(messageData));
     if (!messageData) {
       console.log('[DEBUG] No messageData, returning empty array');
       return [];
+    }
+    if (Array.isArray(messageData)) {
+      console.log('[DEBUG] messageData is direct array with length:', messageData.length);
+      return messageData;
     }
     if (Array.isArray(messageData?.messages)) {
       console.log('[DEBUG] Found messages in messageData.messages:', messageData.messages.length);
       return messageData.messages;
     }
-    if (Array.isArray(messageData)) {
-      console.log('[DEBUG] messageData is array:', messageData.length);
-      return messageData;
-    }
-    console.log('[DEBUG] messageData type not recognized:', typeof messageData);
+    console.log('[DEBUG] messageData structure:', Object.keys(messageData || {}));
     return [];
   })();
 
@@ -306,7 +308,7 @@ export default function MessagingHub() {
                        getConversationDisplayName(conversations.find((c: Conversation) => c.id === selectedConversation)!)}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {conversations.find((c: Conversation) => c.id === selectedConversation)?.participants.length} participants
+                      {messages.length} messages
                     </p>
                   </div>
                 </div>
