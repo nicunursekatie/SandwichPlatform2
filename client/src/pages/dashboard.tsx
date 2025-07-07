@@ -328,7 +328,7 @@ export default function Dashboard() {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors flex-shrink-0"
+            className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors flex-shrink-0"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -391,7 +391,7 @@ export default function Dashboard() {
         {/* Mobile overlay */}
         {isMobileMenuOpen && (
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
             onClick={() => setIsMobileMenuOpen(false)}
           />
         )}
@@ -399,7 +399,7 @@ export default function Dashboard() {
         {/* Sidebar */}
         <div className={`${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 fixed md:relative z-50 w-64 lg:w-72 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out h-full`}>
+        } lg:translate-x-0 fixed lg:relative z-50 w-72 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out h-full`}>
           {/* Simple Navigation with enhanced mobile scrolling */}
           <div className="flex-1 overflow-y-auto pb-6 touch-pan-y">
             <SimpleNav onSectionChange={setActiveSection} />
@@ -407,9 +407,9 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-hidden min-w-0 flex flex-col">
+        <div className="flex-1 overflow-hidden min-w-0 flex flex-col mobile-full-width">
           <div className="flex-1 overflow-y-auto">
-            <div className="p-2 sm:p-4 lg:p-6 max-w-full">
+            <div className="p-4 lg:p-6 w-full max-w-none mobile-full-width">
               {renderContent()}
             </div>
           </div>

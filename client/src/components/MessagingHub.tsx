@@ -138,21 +138,21 @@ export default function MessagingHub() {
   }
 
   return (
-    <div className="flex h-full min-h-[400px] max-h-[calc(100vh-120px)] border rounded-lg overflow-hidden relative">
+    <div className="flex flex-col lg:flex-row h-[70vh] lg:h-full min-h-[500px] border rounded-lg overflow-hidden relative mobile-full-width">
       {/* Mobile backdrop overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-10 md:hidden"
+          className="fixed inset-0 bg-black/50 z-10 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
       
       {/* Sidebar - Conversations List */}
       <div className={`
-        ${sidebarCollapsed ? 'w-16' : 'w-80'} 
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-        bg-muted/30 border-r transition-all duration-200 
-        absolute md:relative z-20 h-full md:z-auto
+        ${sidebarCollapsed ? 'w-16' : 'w-full lg:w-80'} 
+        ${isMobileMenuOpen ? 'block' : 'hidden lg:block'}
+        bg-muted/30 border-r lg:border-b-0 border-b transition-all duration-200 
+        flex flex-col h-64 lg:h-full overflow-hidden mobile-full-width
       `}>
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
@@ -164,7 +164,7 @@ export default function MessagingHub() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="hidden md:inline-flex"
+                className="hidden lg:inline-flex"
               >
                 {sidebarCollapsed ? <MessageSquare className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
               </Button>
@@ -172,7 +172,7 @@ export default function MessagingHub() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="md:hidden"
+                className="lg:hidden"
               >
                 ×
               </Button>
@@ -255,7 +255,7 @@ export default function MessagingHub() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsMobileMenuOpen(true)}
-                    className="md:hidden"
+                    className="lg:hidden"
                   >
                     <MessageSquare className="h-4 w-4" />
                   </Button>
@@ -347,10 +347,10 @@ export default function MessagingHub() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center text-muted-foreground p-4">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden mb-4"
+                className="lg:hidden mb-4"
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Open Conversations
