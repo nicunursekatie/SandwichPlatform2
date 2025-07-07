@@ -3,8 +3,8 @@ import sandwichLogo from "@assets/LOGOS/sandwich logo.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProjectList from "@/components/project-list";
 import WeeklySandwichForm from "@/components/weekly-sandwich-form";
-import ChatHub from "@/components/chat-hub";
-import CommitteeChat from "@/components/committee-chat";
+import MessagingHub from "@/components/MessagingHub";
+import ConversationManager from "@/components/ConversationManager";
 import GoogleDriveLinks from "@/components/google-drive-links";
 import DashboardOverview from "@/components/dashboard-overview";
 import SandwichCollectionLog from "@/components/sandwich-collection-log";
@@ -112,7 +112,20 @@ export default function Dashboard() {
       case "projects":
         return <ProjectsClean />;
       case "messages":
-        return <ChatHub />;
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl" style={{backgroundColor: 'var(--tsp-teal-light)'}}>
+                <MessageCircle className="w-6 h-6" style={{color: 'var(--tsp-teal)'}} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Messages</h1>
+                <p className="text-gray-600 dark:text-gray-300">Real-time messaging and communication</p>
+              </div>
+            </div>
+            <MessagingHub />
+          </div>
+        );
       case "profile":
         return <UserProfile />;
       case "meetings":
@@ -281,7 +294,7 @@ export default function Dashboard() {
                 <p className="text-gray-600 dark:text-gray-300">Internal committee discussions and collaboration</p>
               </div>
             </div>
-            <CommitteeChat />
+            <MessagingHub />
           </div>
         );
       case "user-management":
