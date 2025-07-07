@@ -318,25 +318,25 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen flex flex-col">
+    <div className="bg-slate-50 min-h-screen flex flex-col overflow-hidden">
       {/* Announcement Banner */}
       <AnnouncementBanner />
       
       {/* Top Header */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex justify-between items-center">
-        <div className="flex items-center space-x-3">
+      <div className="bg-white border-b border-slate-200 px-2 sm:px-4 lg:px-6 py-3 flex justify-between items-center flex-shrink-0">
+        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors flex-shrink-0"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <img src={sandwichLogo} alt="Sandwich Logo" className="w-6 h-6" />
-          <h1 className="text-lg font-semibold text-slate-900 hidden sm:block">The Sandwich Project</h1>
-          <h1 className="text-sm font-semibold text-slate-900 sm:hidden">TSP</h1>
+          <img src={sandwichLogo} alt="Sandwich Logo" className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
+          <h1 className="text-base sm:text-lg font-semibold text-slate-900 hidden sm:block truncate">The Sandwich Project</h1>
+          <h1 className="text-sm font-semibold text-slate-900 sm:hidden truncate">TSP</h1>
         </div>
-        <div className="flex items-center space-x-2 sm:space-x-4">
+        <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
           <button
             onClick={() => setActiveSection("messages")}
             className={`p-2 rounded-lg transition-colors ${
@@ -346,7 +346,7 @@ export default function Dashboard() {
             }`}
             title="Messages"
           >
-            <MessageCircle className="w-5 h-5" />
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
           <MessageNotifications user={user} />
           <button
@@ -358,7 +358,7 @@ export default function Dashboard() {
             }`}
             title="Account Settings"
           >
-            <UserCog className="w-5 h-5" />
+            <UserCog className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
           <button 
             onClick={async () => {
@@ -387,7 +387,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1 relative min-h-0">
         {/* Mobile overlay */}
         {isMobileMenuOpen && (
           <div 
@@ -399,7 +399,7 @@ export default function Dashboard() {
         {/* Sidebar */}
         <div className={`${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 fixed md:relative z-50 w-64 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out h-screen max-h-screen`}>
+        } md:translate-x-0 fixed md:relative z-50 w-64 lg:w-72 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out h-full`}>
           {/* Simple Navigation with enhanced mobile scrolling */}
           <div className="flex-1 overflow-y-auto pb-6 touch-pan-y">
             <SimpleNav onSectionChange={setActiveSection} />
@@ -407,9 +407,11 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto w-full md:w-auto">
-          <div className="p-4 sm:p-6 pb-20">
-            {renderContent()}
+        <div className="flex-1 overflow-hidden min-w-0 flex flex-col">
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-2 sm:p-4 lg:p-6 max-w-full">
+              {renderContent()}
+            </div>
           </div>
         </div>
       </div>

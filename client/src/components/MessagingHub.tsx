@@ -47,6 +47,7 @@ export default function MessagingHub() {
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [messageContent, setMessageContent] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Fetch conversations
   const { data: conversations = [], isLoading: conversationsLoading } = useQuery({
@@ -137,21 +138,45 @@ export default function MessagingHub() {
   }
 
   return (
-    <div className="flex h-[600px] border rounded-lg overflow-hidden">
+    <div className="flex h-full min-h-[400px] max-h-[calc(100vh-120px)] border rounded-lg overflow-hidden relative">
+      {/* Mobile backdrop overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-10 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+      
       {/* Sidebar - Conversations List */}
-      <div className={`${sidebarCollapsed ? 'w-16' : 'w-80'} bg-muted/30 border-r transition-all duration-200`}>
+      <div className={`
+        ${sidebarCollapsed ? 'w-16' : 'w-80'} 
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        bg-muted/30 border-r transition-all duration-200 
+        absolute md:relative z-20 h-full md:z-auto
+      `}>
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
             {!sidebarCollapsed && (
               <h3 className="font-semibold text-lg">Conversations</h3>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            >
-              {sidebarCollapsed ? <MessageSquare className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="hidden md:inline-flex"
+              >
+                {sidebarCollapsed ? <MessageSquare className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="md:hidden"
+              >
+                ×
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -219,20 +244,30 @@ export default function MessagingHub() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {selectedConversation ? (
           <>
             {/* Chat Header */}
             <div className="p-4 border-b bg-background">
               <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold">
-                    {conversations.find((c: Conversation) => c.id === selectedConversation)?.name || 
-                     getConversationDisplayName(conversations.find((c: Conversation) => c.id === selectedConversation)!)}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {conversations.find((c: Conversation) => c.id === selectedConversation)?.participants.length} participants
-                  </p>
+                <div className="flex items-center space-x-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    className="md:hidden"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                  </Button>
+                  <div>
+                    <h3 className="font-semibold truncate">
+                      {conversations.find((c: Conversation) => c.id === selectedConversation)?.name || 
+                       getConversationDisplayName(conversations.find((c: Conversation) => c.id === selectedConversation)!)}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {conversations.find((c: Conversation) => c.id === selectedConversation)?.participants.length} participants
+                    </p>
+                  </div>
                 </div>
                 <Button variant="outline" size="sm">
                   <Settings className="h-4 w-4" />
@@ -268,15 +303,15 @@ export default function MessagingHub() {
                             {message.sender?.charAt(0).toUpperCase() || 'U'}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 space-y-1">
+                        <div className="flex-1 space-y-1 min-w-0">
                           <div className="flex items-center space-x-2">
-                            <span className="font-medium text-sm">{message.sender}</span>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="font-medium text-sm truncate">{message.sender}</span>
+                            <span className="text-xs text-muted-foreground flex-shrink-0">
                               {formatTime(message.createdAt)}
                             </span>
                           </div>
-                          <div className="bg-muted/50 rounded-lg p-3">
-                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                          <div className="bg-muted/50 rounded-lg p-2 sm:p-3 max-w-full">
+                            <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                           </div>
                         </div>
                       </div>
@@ -287,30 +322,39 @@ export default function MessagingHub() {
             </ScrollArea>
 
             {/* Message Input */}
-            <div className="p-4 border-t">
-              <div className="flex space-x-2">
+            <div className="p-2 sm:p-4 border-t">
+              <div className="flex space-x-1 sm:space-x-2">
                 <Textarea
                   placeholder="Type your message..."
                   value={messageContent}
                   onChange={(e) => setMessageContent(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="flex-1 min-h-[44px] max-h-32 resize-none"
+                  className="flex-1 min-h-[40px] sm:min-h-[44px] max-h-32 resize-none text-sm sm:text-base"
                   rows={1}
                 />
                 <Button 
                   onClick={handleSendMessage}
                   disabled={!messageContent.trim() || sendMessageMutation.isPending}
                   size="sm"
-                  className="px-3"
+                  className="px-2 sm:px-3"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </div>
             </div>
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <div className="text-center text-muted-foreground">
+            <div className="text-center text-muted-foreground p-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="md:hidden mb-4"
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Open Conversations
+              </Button>
               <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium">Select a conversation</p>
               <p className="text-sm">Choose a conversation from the sidebar to start messaging</p>
