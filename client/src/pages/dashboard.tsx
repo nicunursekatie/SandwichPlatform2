@@ -3,7 +3,7 @@ import sandwichLogo from "@assets/LOGOS/sandwich logo.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProjectList from "@/components/project-list";
 import WeeklySandwichForm from "@/components/weekly-sandwich-form";
-import MessagingHub from "@/components/MessagingHub";
+import { SimpleMessaging } from "@/components/SimpleMessaging";
 import ConversationManager from "@/components/ConversationManager";
 import GoogleDriveLinks from "@/components/google-drive-links";
 import DashboardOverview from "@/components/dashboard-overview";
@@ -123,7 +123,7 @@ export default function Dashboard() {
                 <p className="text-gray-600 dark:text-gray-300">Real-time messaging and communication</p>
               </div>
             </div>
-            <MessagingHub />
+            <SimpleMessaging />
           </div>
         );
       case "profile":
@@ -294,7 +294,7 @@ export default function Dashboard() {
                 <p className="text-gray-600 dark:text-gray-300">Internal committee discussions and collaboration</p>
               </div>
             </div>
-            <MessagingHub />
+            <SimpleMessaging />
           </div>
         );
       case "user-management":
