@@ -74,34 +74,11 @@ export default function MessagingHub() {
 
   // Fetch messages for selected conversation using working old API
   const { data: messageData, isLoading: messagesLoading } = useQuery({
-    queryKey: ['/api/messages', selectedConversation],
+    queryKey: ['/api/messages', selectedConversation || 1],
     queryFn: () => {
-      // Force general chat if selectedConversation is 1 or null
-      if (selectedConversation === 1 || !selectedConversation) {
-        return apiRequest('GET', '/api/messages?chatType=general');
-      }
-      
-      const convName = conversations.find(c => c.id === selectedConversation)?.name?.toLowerCase();
-      if (convName?.includes('general')) {
-        return apiRequest('GET', '/api/messages?chatType=general');
-          } else if (convName?.includes('committee')) {
-            return apiRequest('GET', '/api/messages?chatType=committee');
-          } else if (convName?.includes('host')) {
-            return apiRequest('GET', '/api/messages?chatType=host');
-          } else if (convName?.includes('driver')) {
-            return apiRequest('GET', '/api/messages?chatType=driver');
-          } else if (convName?.includes('recipient')) {
-            return apiRequest('GET', '/api/messages?chatType=recipient');
-          } else if (convName?.includes('core')) {
-            return apiRequest('GET', '/api/messages?chatType=core_team');
-          } else if (convName?.includes('direct')) {
-            return apiRequest('GET', '/api/messages?chatType=direct');
-          } else if (convName?.includes('group')) {
-            return apiRequest('GET', '/api/messages?chatType=group');
-          }
-          console.log('[DEBUG] No matching chat type, defaulting to general for:', convName);
-          return apiRequest('GET', '/api/messages?chatType=general');
-        },
+      // Always default to general chat
+      return apiRequest('GET', '/api/messages?chatType=general');
+    },
     staleTime: 0,
     refetchOnWindowFocus: true,
   });
