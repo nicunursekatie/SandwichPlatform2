@@ -73,15 +73,20 @@ export default function MessagingHub() {
   }, [conversations]);
 
   // Fetch messages for selected conversation using working old API
-  const { data: messageData, isLoading: messagesLoading } = useQuery({
+  const { data: messageData, isLoading: messagesLoading, refetch: refetchMessages } = useQuery({
     queryKey: ['/api/messages', selectedConversation || 1],
-    queryFn: () => {
+    queryFn: async () => {
+      console.log('[DEBUG] Query executing for user:', user?.id);
       // Always default to general chat
-      return apiRequest('GET', '/api/messages?chatType=general');
+      const result = await apiRequest('GET', '/api/messages?chatType=general');
+      console.log('[DEBUG] Query result:', result);
+      return result;
     },
     enabled: !!user, // Only fetch when user is authenticated
     staleTime: 0,
+    cacheTime: 0, // Disable caching completely
     refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 
   // Safely extract messages array with proper error handling
@@ -167,7 +172,8 @@ export default function MessagingHub() {
     });
   };
 
-  const getConversationDisplayName = (conversation: Conversation) => {
+  const getConversationDisplayName = (conversation: Conversation | undefined) => {
+    if (!conversation) return 'General Chat';
     if (conversation.type === 'direct') {
       const otherParticipant = conversation.participants.find(p => p.userId !== user?.id);
       return otherParticipant?.userId || 'Direct Message';
