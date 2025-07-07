@@ -44,7 +44,7 @@ export default function MessagingHub() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(1); // Default to General Chat (ID: 1)
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(1);
   const [messageContent, setMessageContent] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -64,6 +64,16 @@ export default function MessagingHub() {
     ],
     enabled: !!user,
   });
+
+  // Auto-select General Chat when conversations load
+  React.useEffect(() => {
+    if (!selectedConversation && conversations.length > 0) {
+      const generalChat = conversations.find(c => c.name?.toLowerCase().includes('general'));
+      if (generalChat) {
+        setSelectedConversation(generalChat.id);
+      }
+    }
+  }, [conversations, selectedConversation]);
 
   // Fetch messages for selected conversation using working old API
   const { data: messageData, isLoading: messagesLoading } = useQuery({
