@@ -74,11 +74,11 @@ export default function MessagingHub() {
 
   // Fetch messages for selected conversation using working old API
   const { data: messageData, isLoading: messagesLoading, refetch: refetchMessages } = useQuery({
-    queryKey: ['/api/messages', selectedConversation || 1],
+    queryKey: ['/api/messages', selectedConversation || 1, Date.now()], // Force unique key
     queryFn: async () => {
       console.log('[DEBUG] Query executing for user:', user?.id);
-      // Always default to general chat
-      const result = await apiRequest('GET', '/api/messages?chatType=general');
+      // Always default to general chat with cache buster
+      const result = await apiRequest('GET', `/api/messages?chatType=general&t=${Date.now()}`);
       console.log('[DEBUG] Query result:', result);
       return result;
     },
