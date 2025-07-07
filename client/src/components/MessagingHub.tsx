@@ -66,7 +66,7 @@ export default function MessagingHub() {
   });
 
   // Auto-select General Chat when conversations load
-  React.useEffect(() => {
+  useEffect(() => {
     if (conversations.length > 0 && selectedConversation !== 1) {
       setSelectedConversation(1); // Force General Chat (ID: 1)
     }
