@@ -86,9 +86,20 @@ export default function MessagingHub() {
 
   // Safely extract messages array with proper error handling
   const messages = (() => {
-    if (!messageData) return [];
-    if (Array.isArray(messageData?.messages)) return messageData.messages;
-    if (Array.isArray(messageData)) return messageData;
+    console.log('[DEBUG] messageData received:', messageData);
+    if (!messageData) {
+      console.log('[DEBUG] No messageData, returning empty array');
+      return [];
+    }
+    if (Array.isArray(messageData?.messages)) {
+      console.log('[DEBUG] Found messages in messageData.messages:', messageData.messages.length);
+      return messageData.messages;
+    }
+    if (Array.isArray(messageData)) {
+      console.log('[DEBUG] messageData is array:', messageData.length);
+      return messageData;
+    }
+    console.log('[DEBUG] messageData type not recognized:', typeof messageData);
     return [];
   })();
 
