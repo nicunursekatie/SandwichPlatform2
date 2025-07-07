@@ -10,6 +10,7 @@ export function useAuth() {
     gcTime: 0, // Don't cache
     refetchOnMount: true,
     refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 
   // Enhanced debugging for mobile issues
