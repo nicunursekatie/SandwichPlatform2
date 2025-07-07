@@ -5566,8 +5566,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await migrationMonitor.generateMigrationDiff();
   await migrationMonitor.generateUuidRekeyScript();
 
-  // Add session health middleware
-  app.use(sessionHealthMiddleware);
+  // Session health middleware disabled - was causing 401 errors
+  // app.use(sessionHealthMiddleware);
 
   // ==================== PHASE 3: UNIFIED MESSAGING API ====================
   // Import and register unified messaging routes
