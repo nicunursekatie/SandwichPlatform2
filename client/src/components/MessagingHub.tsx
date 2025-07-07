@@ -139,20 +139,11 @@ export default function MessagingHub() {
 
   return (
     <div className="flex flex-col lg:flex-row h-[70vh] lg:h-full min-h-[500px] border rounded-lg overflow-hidden relative mobile-full-width">
-      {/* Mobile backdrop overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-10 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-      
-      {/* Sidebar - Conversations List */}
+      {/* Sidebar - Conversations List - Always visible on mobile */}
       <div className={`
         ${sidebarCollapsed ? 'w-16' : 'w-full lg:w-80'} 
-        ${isMobileMenuOpen ? 'block' : 'hidden lg:block'}
         bg-muted/30 border-r lg:border-b-0 border-b transition-all duration-200 
-        flex flex-col h-64 lg:h-full overflow-hidden mobile-full-width
+        flex flex-col h-48 lg:h-full overflow-hidden mobile-full-width
       `}>
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
@@ -167,14 +158,6 @@ export default function MessagingHub() {
                 className="hidden lg:inline-flex"
               >
                 {sidebarCollapsed ? <MessageSquare className="h-4 w-4" /> : <Settings className="h-4 w-4" />}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="lg:hidden"
-              >
-                ×
               </Button>
             </div>
           </div>
@@ -244,21 +227,14 @@ export default function MessagingHub() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-full lg:h-auto">
         {selectedConversation ? (
           <>
             {/* Chat Header */}
             <div className="p-4 border-b bg-background">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsMobileMenuOpen(true)}
-                    className="lg:hidden"
-                  >
-                    <MessageSquare className="h-4 w-4" />
-                  </Button>
+
                   <div>
                     <h3 className="font-semibold truncate">
                       {conversations.find((c: Conversation) => c.id === selectedConversation)?.name || 
@@ -276,7 +252,7 @@ export default function MessagingHub() {
             </div>
 
             {/* Messages Area */}
-            <ScrollArea className="flex-1 p-4">
+            <ScrollArea className="flex-1 p-2 lg:p-4 h-64 lg:h-auto">
               {messagesLoading ? (
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
@@ -344,20 +320,11 @@ export default function MessagingHub() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center h-64 lg:h-auto">
             <div className="text-center text-muted-foreground p-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden mb-4"
-              >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Open Conversations
-              </Button>
-              <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">Select a conversation</p>
-              <p className="text-sm">Choose a conversation from the sidebar to start messaging</p>
+              <MessageSquare className="h-8 w-8 lg:h-12 lg:w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-base lg:text-lg font-medium">Select a conversation</p>
+              <p className="text-xs lg:text-sm">Choose a conversation above to start messaging</p>
             </div>
           </div>
         )}
