@@ -78,7 +78,16 @@ export default function MessagingHub() {
     queryFn: async () => {
       console.log('[DEBUG] Query executing for user:', user?.id);
       // Always default to general chat with cache buster
-      const result = await apiRequest('GET', `/api/messages?chatType=general&t=${Date.now()}`);
+      const response = await fetch('/api/messages?chatType=general', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const result = await response.json();
       console.log('[DEBUG] Query result:', result);
       return result;
     },

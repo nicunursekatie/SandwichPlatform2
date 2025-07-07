@@ -1,0 +1,64 @@
+chunk-RPCDYKBN.js?v=e609a36d:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+message-notifications.tsx:34 🔔 MessageNotifications component mounting...
+message-notifications.tsx:39 🔔 MessageNotifications: user= committee_1751908045302 isAuthenticated= true
+message-notifications.tsx:40 🔔 MessageNotifications: user object= {id: 'committee_1751908045302', role: 'admin', email: 'katielong2316@gmail.com', isActive: true, lastName: 'Long', …}
+message-notifications.tsx:55 🔔 MessageNotifications: Query state - isLoading: true error: null data: undefined
+message-notifications.tsx:138 🔔 MessageNotifications: Loading unread counts...
+message-notifications.tsx:59 🔔 WebSocket useEffect triggered, user= {id: 'committee_1751908045302', role: 'admin', email: 'katielong2316@gmail.com', isActive: true, lastName: 'Long', …}
+message-notifications.tsx:65 🔔 Setting up WebSocket for user: committee_1751908045302
+message-notifications.tsx:69 Connecting to WebSocket: wss://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pnfvv8jzwri4.spock.replit.dev/notifications
+message-notifications.tsx:34 🔔 MessageNotifications component mounting...
+message-notifications.tsx:39 🔔 MessageNotifications: user= committee_1751908045302 isAuthenticated= true
+message-notifications.tsx:40 🔔 MessageNotifications: user object= {id: 'committee_1751908045302', role: 'admin', email: 'katielong2316@gmail.com', isActive: true, lastName: 'Long', …}
+message-notifications.tsx:55 🔔 MessageNotifications: Query state - isLoading: true error: null data: undefined
+message-notifications.tsx:138 🔔 MessageNotifications: Loading unread counts...
+message-notifications.tsx:75 Notification WebSocket connected successfully
+message-notifications.tsx:76 User ID: committee_1751908045302
+message-notifications.tsx:34 🔔 MessageNotifications component mounting...
+message-notifications.tsx:39 🔔 MessageNotifications: user= committee_1751908045302 isAuthenticated= true
+message-notifications.tsx:40 🔔 MessageNotifications: user object= {id: 'committee_1751908045302', role: 'admin', email: 'katielong2316@gmail.com', isActive: true, lastName: 'Long', …}
+message-notifications.tsx:55 🔔 MessageNotifications: Query state - isLoading: false error: null data: {general: 0, committee: 0, hosts: 0, drivers: 0, recipients: 0, …}
+message-notifications.tsx:163 🔔 MessageNotifications: Rendering with final unread counts: {general: 0, committee: 0, hosts: 0, drivers: 0, recipients: 0, …}
+message-notifications.tsx:201 🔔 MessageNotifications rendering with totalUnread: 0
+message-notifications.tsx:34 🔔 MessageNotifications component mounting...
+message-notifications.tsx:39 🔔 MessageNotifications: user= committee_1751908045302 isAuthenticated= true
+message-notifications.tsx:40 🔔 MessageNotifications: user object= {id: 'committee_1751908045302', role: 'admin', email: 'katielong2316@gmail.com', isActive: true, lastName: 'Long', …}
+message-notifications.tsx:55 🔔 MessageNotifications: Query state - isLoading: false error: null data: {general: 0, committee: 0, hosts: 0, drivers: 0, recipients: 0, …}
+message-notifications.tsx:163 🔔 MessageNotifications: Rendering with final unread counts: {general: 0, committee: 0, hosts: 0, drivers: 0, recipients: 0, …}
+message-notifications.tsx:201 🔔 MessageNotifications rendering with totalUnread: 0
+MessagingHub.tsx:94 [DEBUG] messageData received: undefined
+MessagingHub.tsx:96 [DEBUG] No messageData, returning empty array
+MessagingHub.tsx:79 [DEBUG] Query executing for user: committee_1751908045302
+message-notifications.tsx:34 🔔 MessageNotifications component mounting...
+message-notifications.tsx:39 🔔 MessageNotifications: user= committee_1751908045302 isAuthenticated= true
+message-notifications.tsx:40 🔔 MessageNotifications: user object= {id: 'committee_1751908045302', role: 'admin', email: 'katielong2316@gmail.com', isActive: true, lastName: 'Long', …}
+message-notifications.tsx:55 🔔 MessageNotifications: Query state - isLoading: false error: null data: {general: 0, committee: 0, hosts: 0, drivers: 0, recipients: 0, …}
+message-notifications.tsx:163 🔔 MessageNotifications: Rendering with final unread counts: {general: 0, committee: 0, hosts: 0, drivers: 0, recipients: 0, …}
+message-notifications.tsx:201 🔔 MessageNotifications rendering with totalUnread: 0
+MessagingHub.tsx:94 [DEBUG] messageData received: undefined
+MessagingHub.tsx:96 [DEBUG] No messageData, returning empty array
+MessagingHub.tsx:94 [DEBUG] messageData received: undefined
+MessagingHub.tsx:96 [DEBUG] No messageData, returning empty array
+MessagingHub.tsx:82 [DEBUG] Query result: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:79 [DEBUG] Query executing for user: committee_1751908045302
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:82 [DEBUG] Query result: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:79 [DEBUG] Query executing for user: committee_1751908045302
+MessagingHub.tsx:82 [DEBUG] Query result: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
+MessagingHub.tsx:94 [DEBUG] messageData received: Response {type: 'basic', url: 'https://fd85b8f7-b44b-418a-bfaf-8acf650e8702-00-pn…i4.spock.replit.dev/api/messages?chatType=general', redirected: false, status: 200, ok: true, …}
+MessagingHub.tsx:107 [DEBUG] messageData type not recognized: object
