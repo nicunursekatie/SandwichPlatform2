@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-07-07T18:55:39.546Z",
+  "summary": {
+    "total_tables": 3,
+    "completed": 0,
+    "in_progress": 0,
+    "pending": 0,
+    "failed": 3
+  },
+  "details": [
+    {
+      "table": "conversations",
+      "rowsInOld": 0,
+      "rowsInNew": 0,
+      "migrated": 0,
+      "status": "failed",
+      "lastCheck": "2025-07-07T18:55:39.424Z"
+    },
+    {
+      "table": "conversation_participants",
+      "rowsInOld": 0,
+      "rowsInNew": 0,
+      "migrated": 0,
+      "status": "failed",
+      "lastCheck": "2025-07-07T18:55:39.485Z"
+    },
+    {
+      "table": "messages",
+      "rowsInOld": 0,
+      "rowsInNew": 0,
+      "migrated": 0,
+      "status": "failed",
+      "lastCheck": "2025-07-07T18:55:39.546Z"
+    }
+  ]
+}

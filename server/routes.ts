@@ -16,6 +16,8 @@ import { storage } from "./storage-wrapper";
 import { sendDriverAgreementNotification } from "./sendgrid";
 import { messageNotificationRoutes } from "./routes/message-notifications";
 import googleSheetsRoutes from "./routes/google-sheets";
+import { sessionHealthMiddleware, ensureSessionDurability } from "./middleware/session-health";
+import { migrationMonitor } from "./middleware/migration-monitor";
 // import { generalRateLimit, strictRateLimit, uploadRateLimit, clearRateLimit } from "./middleware/rateLimiter";
 import { sanitizeMiddleware } from "./middleware/sanitizer";
 import { requestLogger, errorLogger, logger } from "./middleware/logger";
@@ -5552,6 +5554,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         error: 'Failed to sync to Google Sheets',
         details: error.message 
+      });
+    }
+  });
+
+  // Initialize session durability check on startup (Safeguard 1)
+  await ensureSessionDurability();
+
+  // Initialize migration monitoring system (Safeguard 2)
+  console.log('🔧 Initializing migration monitoring system...');
+  await migrationMonitor.generateMigrationDiff();
+  await migrationMonitor.generateUuidRekeyScript();
+
+  // Add session health middleware
+  app.use(sessionHealthMiddleware);
+
+  // API endpoints for safeguards monitoring
+  app.get('/api/system/session-health', async (req, res) => {
+    try {
+      const { checkSessionHealth } = await import('./middleware/session-health');
+      const health = await checkSessionHealth();
+      res.json(health);
+    } catch (error) {
+      res.status(500).json({ 
+        healthy: false, 
+        error: error.message 
+      });
+    }
+  });
+
+  app.get('/api/system/migration-status', async (req, res) => {
+    try {
+      const diff = await migrationMonitor.generateMigrationDiff();
+      res.json({
+        success: true,
+        migration_status: diff,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        error: error.message 
       });
     }
   });

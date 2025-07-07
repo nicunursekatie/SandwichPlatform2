@@ -494,25 +494,52 @@ export function setupTempAuth(app: Express) {
     }
   });
 
-  // Get current user endpoint
+  // Get current user endpoint with session health check integration
   app.get("/api/auth/user", async (req: any, res) => {
-    if (req.session.user) {
-      try {
-        // Get fresh user data from database to ensure permissions are current
-        const dbUser = await storage.getUserByEmail(req.session.user.email);
-        if (!dbUser || !dbUser.isActive) {
-          return res.status(401).json({ message: "User account not found or inactive" });
+    try {
+      // Safeguard 1: Session health check (integrated into auth fix)
+      if (process.env.NODE_ENV === 'development') {
+        const { checkSessionHealth } = await import('./middleware/session-health');
+        const health = await checkSessionHealth();
+        if (!health.healthy) {
+          console.error('🚨 SESSION HEALTH CHECK FAILED:', health.details);
+        }
+      }
+
+      if (req.session.user) {
+        // Always fetch fresh user data from database to ensure up-to-date permissions
+        const userId = req.session.user.id;
+        const freshUser = await storage.getUser(userId);
+        
+        if (!freshUser || !freshUser.isActive) {
+          // User no longer exists or is inactive, clear session
+          req.session.destroy((err) => {
+            if (err) console.error('Session destroy error:', err);
+          });
+          return res.status(401).json({ message: "Unauthorized" });
         }
 
-        // Standardize authentication - Always use (req as any).user and attach dbUser to request
-        (req as any).user = dbUser;
+        // Update session with fresh data
+        const sessionUser = {
+          id: freshUser.id,
+          email: freshUser.email,
+          firstName: freshUser.firstName,
+          lastName: freshUser.lastName,
+          profileImageUrl: freshUser.profileImageUrl,
+          role: freshUser.role,
+          permissions: freshUser.permissions || [],
+          isActive: freshUser.isActive
+        };
 
-        res.json(req.session.user);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        res.status(500).json({ message: "Error fetching user data" });
+        req.session.user = sessionUser;
+        req.user = sessionUser;
+
+        res.json(sessionUser);
+      } else {
+        res.status(401).json({ message: "Unauthorized" });
       }
-    } else {
+    } catch (error) {
+      console.error("Auth user error:", error);
       res.status(401).json({ message: "Unauthorized" });
     }
   });
