@@ -149,27 +149,20 @@ router.get("/conversations/:id/messages", isAuthenticated, async (req: any, res)
       return res.status(403).json({ message: "Access denied to this conversation" });
     }
 
-    // Get messages with pagination using raw SQL for performance
-    const conversationMessages = await db.execute(sql`
-      SELECT id, conversation_id as "conversationId", user_id as "userId", 
-             content, sender, created_at as "createdAt", updated_at as "updatedAt"
-      FROM messages 
-      WHERE conversation_id = ${conversationId}
-      ORDER BY created_at ASC
-      LIMIT ${limit} OFFSET ${offset}
-    `);
+    // Get messages using Drizzle ORM for reliability
+    const conversationMessages = await db
+      .select()
+      .from(messages)
+      .where(eq(messages.conversationId, conversationId))
+      .orderBy(messages.createdAt)
+      .limit(limit)
+      .offset(offset);
 
-    // Get total count for pagination info
-    const [countResult] = await db.execute(sql`
-      SELECT COUNT(*) as count FROM messages WHERE conversation_id = ${conversationId}
-    `);
-    const totalCount = parseInt(countResult.count);
-
-    // Handle different response formats from raw SQL
-    const messageRows = conversationMessages.rows || conversationMessages;
+    // Get total count using Drizzle count function
+    const totalCount = await db.$count(messages, eq(messages.conversationId, conversationId));
     
     res.json({
-      messages: messageRows,
+      messages: conversationMessages,
       pagination: {
         limit,
         offset,
