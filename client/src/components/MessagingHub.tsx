@@ -62,6 +62,8 @@ export default function MessagingHub() {
       ? () => apiRequest('GET', `/api/conversations/${selectedConversation}/messages?limit=50&offset=0`)
       : () => Promise.resolve({ messages: [] }),
     enabled: !!selectedConversation,
+    staleTime: 0, // Always consider data stale to force refresh
+    refetchOnWindowFocus: true,
   });
 
   // Safely extract messages array with proper error handling
@@ -80,10 +82,17 @@ export default function MessagingHub() {
         sender: user?.firstName || user?.email || 'Anonymous'
       });
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       setMessageContent("");
-      queryClient.invalidateQueries({ queryKey: ['/api/conversations', selectedConversation, 'messages'] });
+      // Force immediate cache invalidation and refetch
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/conversations', variables.conversationId, 'messages'] 
+      });
       queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
+      // Force refetch to ensure messages appear immediately
+      queryClient.refetchQueries({ 
+        queryKey: ['/api/conversations', variables.conversationId, 'messages'] 
+      });
     },
     onError: (error) => {
       toast({
