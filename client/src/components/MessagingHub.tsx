@@ -67,22 +67,23 @@ export default function MessagingHub() {
 
   // Auto-select General Chat when conversations load
   React.useEffect(() => {
-    if (!selectedConversation && conversations.length > 0) {
-      const generalChat = conversations.find(c => c.name?.toLowerCase().includes('general'));
-      if (generalChat) {
-        setSelectedConversation(generalChat.id);
-      }
+    if (conversations.length > 0 && selectedConversation !== 1) {
+      setSelectedConversation(1); // Force General Chat (ID: 1)
     }
-  }, [conversations, selectedConversation]);
+  }, [conversations]);
 
   // Fetch messages for selected conversation using working old API
   const { data: messageData, isLoading: messagesLoading } = useQuery({
     queryKey: ['/api/messages', selectedConversation],
-    queryFn: selectedConversation 
-      ? () => {
-          const convName = conversations.find(c => c.id === selectedConversation)?.name?.toLowerCase();
-          if (convName?.includes('general')) {
-            return apiRequest('GET', '/api/messages?chatType=general');
+    queryFn: () => {
+      // Force general chat if selectedConversation is 1 or null
+      if (selectedConversation === 1 || !selectedConversation) {
+        return apiRequest('GET', '/api/messages?chatType=general');
+      }
+      
+      const convName = conversations.find(c => c.id === selectedConversation)?.name?.toLowerCase();
+      if (convName?.includes('general')) {
+        return apiRequest('GET', '/api/messages?chatType=general');
           } else if (convName?.includes('committee')) {
             return apiRequest('GET', '/api/messages?chatType=committee');
           } else if (convName?.includes('host')) {
@@ -98,11 +99,9 @@ export default function MessagingHub() {
           } else if (convName?.includes('group')) {
             return apiRequest('GET', '/api/messages?chatType=group');
           }
-          console.log('[DEBUG] No matching chat type, returning empty array for:', convName);
-          return [];
-        }
-      : () => Promise.resolve([]),
-    enabled: !!selectedConversation,
+          console.log('[DEBUG] No matching chat type, defaulting to general for:', convName);
+          return apiRequest('GET', '/api/messages?chatType=general');
+        },
     staleTime: 0,
     refetchOnWindowFocus: true,
   });
