@@ -46,7 +46,7 @@ import {
 
   conversations,
   conversationParticipants,
-  messages as messagesTable,
+  messages,
   users,
 } from "@shared/schema";
 
@@ -709,10 +709,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const chatType = req.query.chatType as string;
       const userId = (req as any).user?.id;
       
-      // Quick fix: Return empty array for chat types, messages will be added when conversation system is properly set up
+      // Map chatType to conversation ID and fetch actual messages
       if (chatType) {
-        console.log(`[DEBUG] Returning empty messages for chatType: ${chatType}`);
-        return res.json([]);
+        const chatTypeMap = {
+          'general': 1,
+          'committee': 2, 
+          'host': 3,
+          'driver': 4,
+          'recipient': 5,
+          'core_team': 6
+        };
+        
+        const conversationId = chatTypeMap[chatType as keyof typeof chatTypeMap];
+        if (conversationId) {
+          console.log(`[DEBUG] Fetching messages for chatType: ${chatType}, conversationId: ${conversationId}`);
+          
+          // Get messages from the database
+          const messageResults = await db
+            .select({
+              id: messages.id,
+              content: messages.content,
+              userId: messages.userId,
+              sender: messages.sender,
+              createdAt: messages.createdAt
+            })
+            .from(messages)
+            .where(eq(messages.conversationId, conversationId))
+            .orderBy(messages.createdAt);
+          
+          // Format for frontend compatibility
+          const formattedMessages = messageResults.map(msg => ({
+            ...msg,
+            committee: chatType,
+            timestamp: msg.createdAt
+          }));
+          
+          console.log(`[DEBUG] Returning ${formattedMessages.length} messages for ${chatType}`);
+          return res.json(formattedMessages);
+        }
       }
       const committee = req.query.committee as string; // Keep for backwards compatibility
       const recipientId = req.query.recipientId as string;
