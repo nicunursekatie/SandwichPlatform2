@@ -48,51 +48,9 @@ router.post("/conversations", async (req, res) => {
   }
 });
 
-// Get messages for a conversation
-router.get("/conversations/:id/messages", async (req, res) => {
-  try {
-    const userId = (req as any).user?.id;
-    if (!userId) {
-      console.log('DEBUG: No user ID found in get messages, user object:', (req as any).user);
-      return res.status(401).json({ error: "User not authenticated" });
-    }
-    
-    const conversationId = parseInt(req.params.id);
-    const messages = await storage.getConversationMessages(conversationId);
-    res.json(messages);
-  } catch (error) {
-    console.error("Error fetching conversation messages:", error);
-    res.status(500).json({ error: "Failed to fetch messages" });
-  }
-});
+// REMOVED: Legacy route conflicting with unified messaging API
+// This route was using old storage system and conflicting with the new unified API
 
-// Send message to conversation
-router.post("/conversations/:id/messages", async (req, res) => {
-  try {
-    const userId = (req as any).user?.id;
-    if (!userId) {
-      console.log('DEBUG: No user ID found in send message, user object:', (req as any).user);
-      return res.status(401).json({ error: "User not authenticated" });
-    }
-    
-    const conversationId = parseInt(req.params.id);
-    const { content } = req.body;
-    
-    if (!content?.trim()) {
-      return res.status(400).json({ error: "Message content is required" });
-    }
-    
-    const message = await storage.createConversationMessage({
-      conversationId,
-      userId,
-      content: content.trim()
-    });
-    
-    res.status(201).json(message);
-  } catch (error) {
-    console.error("Error sending message:", error);
-    res.status(500).json({ error: "Failed to send message" });
-  }
-});
+// REMOVED: Legacy POST route conflicting with unified messaging API
 
 export { router as conversationsRoutes };
