@@ -59,11 +59,17 @@ export default function MessagingHub() {
     queryKey: ['/api/conversations', selectedConversation, 'messages'],
     queryFn: selectedConversation 
       ? () => apiRequest('GET', `/api/conversations/${selectedConversation}/messages?limit=50&offset=0`)
-      : undefined,
+      : () => Promise.resolve({ messages: [] }),
     enabled: !!selectedConversation,
   });
 
-  const messages = messageData?.messages || messageData || [];
+  // Safely extract messages array with proper error handling
+  const messages = (() => {
+    if (!messageData) return [];
+    if (Array.isArray(messageData?.messages)) return messageData.messages;
+    if (Array.isArray(messageData)) return messageData;
+    return [];
+  })();
 
   // Send message mutation using new unified API
   const sendMessageMutation = useMutation({
@@ -255,7 +261,7 @@ export default function MessagingHub() {
                       No messages yet. Start the conversation!
                     </div>
                   ) : (
-                    messages.map((message: Message) => (
+                    Array.isArray(messages) && messages.map((message: Message) => (
                       <div key={message.id} className="flex space-x-3">
                         <Avatar className="h-8 w-8">
                           <AvatarFallback className="bg-primary text-primary-foreground text-xs">
@@ -274,7 +280,7 @@ export default function MessagingHub() {
                           </div>
                         </div>
                       </div>
-                    ))
+                    )) || null
                   )}
                 </div>
               )}

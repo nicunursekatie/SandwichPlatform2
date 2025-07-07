@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-07T21:57:17.063Z",
+  "timestamp": "2025-07-07T21:56:18.779Z",
   "summary": {
     "total_tables": 3,
     "completed": 0,
@@ -14,7 +14,7 @@
       "rowsInNew": 0,
       "migrated": 0,
       "status": "failed",
-      "lastCheck": "2025-07-07T21:57:16.942Z"
+      "lastCheck": "2025-07-07T21:56:18.659Z"
     },
     {
       "table": "conversation_participants",
@@ -22,7 +22,7 @@
       "rowsInNew": 0,
       "migrated": 0,
       "status": "failed",
-      "lastCheck": "2025-07-07T21:57:17.002Z"
+      "lastCheck": "2025-07-07T21:56:18.718Z"
     },
     {
       "table": "messages",
@@ -30,7 +30,7 @@
       "rowsInNew": 0,
       "migrated": 0,
       "status": "failed",
-      "lastCheck": "2025-07-07T21:57:17.063Z"
+      "lastCheck": "2025-07-07T21:56:18.779Z"
     }
   ]
 }
